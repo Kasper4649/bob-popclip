@@ -29,8 +29,8 @@
 	<key>Extension Image File</key>
 	<string>Bob.png</string>
 	<key>Extension Name</key>
-	<string>Bob v2</string>
-	<key>Required OS Version	</key>
+	<string>Bob</string>
+	<key>Required OS version</key>
 	<string>10.13</string>
 </dict>
 </plist>
