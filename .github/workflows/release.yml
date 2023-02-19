@@ -1,32 +1,27 @@
-name: Release
+name: Publish
 
 on:
   push:
-    tags: [v\d+\.\d+\.\d+]
+    tags:
+      - "*"
 
 jobs:
-  release:
+  build:
+    name: Publish binaries
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Get tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        with:
-          strip_v: true
-
-      - name: Package plugin
-        run: mkdir release && cp -r ./source release/bob-popclip-${{ steps.tag.outputs.tag }}.popclipext
-
+      - name: Build
+        run: >
+          mkdir release && cp -r ./source release/bob-popclip.popclipext
+          && cd release && zip -r bob-popclip.popclipext.zip bob-popclip.popclipext
+          && mv bob-popclip.popclipext.zip bob-popclip.popclipextz
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.TOKEN }}
-          file: release/bob-popclip-${{ steps.tag.outputs.tag }}.popclipext
-          asset_name: release/bob-popclip-${{ steps.tag.outputs.tag }}.popclipext
+          repo_token: ${{ secrets.GH_TOKEN }}
+          file: release/bob-popclip.popclipextz
+          asset_name: bob-popclip.popclipextz
           tag: ${{ github.ref }}
           overwrite: true
-          body: "Release Bob PopClip plugin."
