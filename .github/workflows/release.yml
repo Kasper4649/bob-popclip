@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags: [v\d+\.\d+\.\d+]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+          strip_v: true
+
+      - name: Package plugin
+        run: mkdir release && cp -r ./source release/bob-popclip-${{ steps.tag.outputs.tag }}.popclipext
+
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: release/bob-popclip-${{ steps.tag.outputs.tag }}.popclipext
+          asset_name: release/bob-popclip-${{ steps.tag.outputs.tag }}.popclipext
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "Release Bob PopClip plugin."
